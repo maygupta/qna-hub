@@ -2,7 +2,7 @@
 {% block title %}Questions & Answers{% endblock %}
 
 {% block content %}
-      <form method="GET" action="{{ url_for('main.search') }}">
+      <form method="POST" action="{{ url_for('main.search') }}">
         <div class="form-group">
           <input type="text" class="form-control" id="query" placeholder="Search Question">
         </div>

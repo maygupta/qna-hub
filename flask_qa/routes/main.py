@@ -17,7 +17,7 @@ def index():
 
     return render_template('home.html', **context)
 
-@main.route('/search')
+@main.route('/search', methods=['GET', 'POST'])
 def search():
     query = "%{}%".format(request.form['query'])
     questions = Question.query.filter(Question.question.like(query)).all()
