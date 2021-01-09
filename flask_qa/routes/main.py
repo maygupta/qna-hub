@@ -8,7 +8,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    questions = Question.query.filter(Question.answer != None).all()
+    questions = Question.all()
 
     context = {
         'questions' : questions
@@ -72,6 +72,13 @@ def question(question_id):
     context = {
         'question' : question
     }
+
+    if question.ref_count:
+        question.ref_count += 1
+    else:
+        question.ref_count = 1
+
+    db.session.commit()
 
     return render_template('question.html', **context)
 

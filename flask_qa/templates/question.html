@@ -8,6 +8,7 @@
           <p>Answer: {{ answer.text }}</p>
         {% endfor %}
         <p>Created On: {{ question.created_on }}</p>
+        <p>Reference Count: {{ question.ref_count}} </p>
         <p><a class="btn btn-primary btn-lg">Asked By: {{ question.asker.name }}</a></p>
         <p><a class="btn btn-primary btn-lg">Answered By: {{ question.expert.name }}</a></p>
       </div>
