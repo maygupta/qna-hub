@@ -4,7 +4,7 @@
 {% block content %}
 <div class="jumbotron">
   <h2 class="list-group-item-heading">Question: {{ question.question }}</h2>
-  
+  <br>  
   <h5>Created On: {{ question.created_on.strftime('%Y-%m-%d %H:%M %p') }}</h5>
   <h5>Reference Count: {{ question.ref_count}} </h5>
   
@@ -18,7 +18,7 @@
         <div class="list-group">
           {% for answer in question.answers %}
             <div class="jumbotron">
-              <h2 class="list-group-item-heading">{{ answer.text }}</h2>
+              <h2 class="list-group-item-heading"><pre>{{ answer.text }}</pre></h2>
               <br>
               <h5>Added By: {{ answer.adder.name }}</h5>
               <h5>Added On: {{ answer.created_on.strftime('%Y-%m-%d %H:%M %p') }}</h5>

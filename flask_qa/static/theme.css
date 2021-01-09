@@ -16,3 +16,12 @@ body {
 .theme-showcase .navbar .container {
   width: auto;
 }
+
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  white-space: -moz-pre-rap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-break: keep-all;
+}
