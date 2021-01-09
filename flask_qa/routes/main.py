@@ -21,7 +21,8 @@ def index():
 def search():
     query = request.form['query']
     search_query = "%{}%".format(query)
-    questions = Question.query.filter(Question.question.ilike(search_query)).all()
+    questions = Question.query.filter(Question.question.ilike(search_query))\
+        .order_by(Question.ref_count.desc()).all()
 
     context = {
         'questions' : questions,
@@ -84,8 +85,6 @@ def question(question_id):
         question.ref_count += 1
     else:
         question.ref_count = 1
-
-    print(request.method)
 
     if request.method == 'POST':
         answer = Answer(text=request.form['answer'],
