@@ -79,12 +79,13 @@ def question(question_id):
     else:
         question.ref_count = 1
 
-    print request.method
+    print(request.method)
 
     if request.method == 'POST':
         answer = Answer(text=request.form['answer'],
             added_by=current_user.id,
             question_id=question_id)
+        return redirect(url_for('main.question', question_id=question_id))
 
     db.session.commit()
 
