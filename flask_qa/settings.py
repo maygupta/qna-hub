@@ -1,5 +1,5 @@
 import os 
 
-SQLALCHEMY_DATABASE_URI = 'postgres://mayank:@localhost:5432/qna-hub'
-SECRET_KEY = '123'
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
