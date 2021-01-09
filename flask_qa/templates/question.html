@@ -5,22 +5,23 @@
 <div class="jumbotron">
   <p>Question: {{ question.question }}</p>
   
-  <p>Created On: {{ question.created_on.strftime('%Y-%m-%d %H:%M') }}</p>
+  <p>Created On: {{ question.created_on.strftime('%Y-%m-%d %H:%M %p') }}</p>
   <p>Reference Count: {{ question.ref_count}} </p>
   
 </div>
 
 {% if question.answers|length > 0 %}
-<div class="jumbotron">
+
   <div class="row">
-      Answers
+      <h2>Answers</h2>
       <div class="col-lg-12">
         <div class="list-group">
           {% for answer in question.answers %}
-            <p class="list-group-item-heading">{{ answer.text }}</p>
-            <p><a class="btn btn-primary btn-lg">Added By: {{ answer.adder.name }}</a></p>
-            <p>Created On: {{ answer.created_on.strftime('%Y-%m-%d %H:%M') }}</p>
-            <br>
+            <div class="jumbotron">
+              <p class="list-group-item-heading">{{ answer.text }}</p>
+              <p><a class="btn btn-primary btn-lg">Added By: {{ answer.adder.name }}</a></p>
+              <p>Created On: {{ answer.created_on.strftime('%Y-%m-%d %H:%M %p') }}</p>
+            </div>
           {% endfor %}
         </div>
       </div><!-- /.col-lg-12 -->
