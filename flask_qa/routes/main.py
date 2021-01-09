@@ -66,7 +66,7 @@ def answer(question_id):
 
     return render_template('answer.html', **context)
 
-@main.route('/question/<int:question_id>')
+@main.route('/question/<int:question_id>', methods= ['GET', 'POST'])
 def question(question_id):
     question = Question.query.get_or_404(question_id)
 
