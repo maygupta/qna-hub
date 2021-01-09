@@ -56,3 +56,5 @@ class Answer(db.Model):
 
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
 
+    adder = db.relationship("User")
+
