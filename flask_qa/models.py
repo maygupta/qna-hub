@@ -9,6 +9,8 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100))
     expert = db.Column(db.Boolean)
     admin = db.Column(db.Boolean)
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
     questions_asked = db.relationship(
         'Question', 
@@ -38,3 +40,5 @@ class Question(db.Model):
     answer = db.Column(db.Text)
     asked_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     expert_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())

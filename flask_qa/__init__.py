@@ -1,4 +1,5 @@
-from flask import Flask 
+from flask import Flask
+from flask_migrate import Migrate
 
 from .commands import create_tables
 from .extensions import db, login_manager
@@ -6,12 +7,14 @@ from .models import User
 from .routes.auth import auth
 from .routes.main import main
 
+
 def create_app(config_file='settings.py'):
     app = Flask(__name__)
 
     app.config.from_pyfile(config_file)
 
     db.init_app(app)
+    migrate = Migrate(app, db)
 
     login_manager.init_app(app)
 
