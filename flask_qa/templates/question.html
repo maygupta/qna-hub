@@ -11,6 +11,7 @@
 </div>
 
 {% if question.answers|length > 0 %}
+<div class="jumbotron">
   <div class="row">
       Answers
       <div class="col-lg-12">
@@ -18,13 +19,14 @@
           {% for answer in question.answers %}
             <p class="list-group-item-heading">{{ answer.text }}</p>
             <p><a class="btn btn-primary btn-lg">Added By: {{ answer.adder.name }}</a></p>
-            <p>Created On: {{ answer.created_on.strftime('%Y-%m-%d %H:%M') }}
+            <p>Created On: {{ answer.created_on.strftime('%Y-%m-%d %H:%M') }}</p>
             <br>
           {% endfor %}
         </div>
       </div><!-- /.col-lg-12 -->
     </div>
 {% endif %}
+</div>
 
 
 {% if current_user.expert %}
