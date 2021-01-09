@@ -2,11 +2,11 @@
 {% block title %}Questions & Answers{% endblock %}
 
 {% block content %}
-      <form>
+      <form method="GET" action="{{ url_for('main.search') }}">
         <div class="form-group">
-          <input type="text" class="form-control" id="query" placeholder="Type Question">
+          <input type="text" class="form-control" id="query" placeholder="Search Question">
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
+        <!-- <button type="submit" class="btn btn-primary">Search</button> -->
       </form>
 
 

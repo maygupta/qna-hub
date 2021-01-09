@@ -17,6 +17,18 @@ def index():
 
     return render_template('home.html', **context)
 
+@main.route('/search')
+def search():
+    query = "%{}%".format(request.form['query'])
+    questions = Question.query.filter(Question.question.like(query)).all()
+
+    context = {
+        'questions' : questions,
+        'query': query
+    }
+
+    return render_template('search.html', **context)
+
 @main.route('/ask', methods=['GET', 'POST'])
 @login_required
 def ask():
