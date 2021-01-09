@@ -37,7 +37,9 @@ class User(UserMixin, db.Model):
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.Text)
-    answers = db.relationship("Answer", backref="question", lazy='dynamic')
+    
+    answers = db.relationship("Answer")
+
     asked_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     expert_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_on = db.Column(db.DateTime, server_default=db.func.now())
@@ -53,6 +55,5 @@ class Answer(db.Model):
     ref_count = db.Column(db.Integer)
 
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
-    question = db.relationship('Question')
     
 
