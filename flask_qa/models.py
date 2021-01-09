@@ -35,6 +35,8 @@ class User(UserMixin, db.Model):
         self.password = generate_password_hash(unhashed_password)
 
 class Question(db.Model):
+    __tablename__ = "questions"
+
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.Text)
     answers = db.relationship("Answer", backref="question", lazy='dynamic')
@@ -42,7 +44,7 @@ class Question(db.Model):
     expert_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
-    view_count = db.Column(db.Integer)
+    ref_count = db.Column(db.Integer)
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -50,6 +52,9 @@ class Answer(db.Model):
     added_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())    
-    question_id = db.Column(db.Integer, db.ForeignKey('questions.questions_id'))
+    ref_count = db.Column(db.Integer)
+
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
     question = db.relationship('Question')
+    
 
