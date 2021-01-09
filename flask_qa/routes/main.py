@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 
 from flask_qa.extensions import db
-from flask_qa.models import Question, User
+from flask_qa.models import Question, User, Answer
 
 main = Blueprint('main', __name__)
 
@@ -51,7 +51,10 @@ def answer(question_id):
     question = Question.query.get_or_404(question_id)
 
     if request.method == 'POST':
-        question.answer = request.form['answer']
+        answer = Answer(text=request.form['answer'],
+            added_by=current_user.id,
+            question_id=question_id)
+
         db.session.commit()
 
         return redirect(url_for('main.unanswered'))

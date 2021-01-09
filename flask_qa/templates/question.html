@@ -4,7 +4,9 @@
 {% block content %}
 <div class="jumbotron">
         <p>Question: {{ question.question }}</p>
-        <p>Answer: {{ question.answer }}</p>
+        {% for anwer in question.answers %}
+          <p>Answer: {{ answer.text }}</p>
+        {% endfor %}
         <p>Created On: {{ question.created_on }}</p>
         <p><a class="btn btn-primary btn-lg">Asked By: {{ question.asker.name }}</a></p>
         <p><a class="btn btn-primary btn-lg">Answered By: {{ question.expert.name }}</a></p>
