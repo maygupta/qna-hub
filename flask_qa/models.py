@@ -55,5 +55,4 @@ class Answer(db.Model):
     ref_count = db.Column(db.Integer)
 
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
-    
 

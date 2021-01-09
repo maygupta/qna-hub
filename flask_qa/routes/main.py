@@ -85,6 +85,8 @@ def question(question_id):
         answer = Answer(text=request.form['answer'],
             added_by=current_user.id,
             question_id=question_id)
+
+        db.session.commit()        
         return redirect(url_for('main.question', question_id=question_id))
 
     db.session.commit()
