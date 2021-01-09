@@ -10,13 +10,14 @@
   
   
 
-  {% for anwer in question.answers %}
+  {% for answer in question.answers %}
     <p>Answer {{ loop.index }} :  {{ answer.text }}</p>
     <p><a class="btn btn-primary btn-lg">Added By: {{ answer.added_by }}</a>
     </p>
   {% endfor %}
 </div>
 
+{% if current_user.expert %}
 <h2> Add an answer </h2>
 <div class="row">
   <div class="col-lg-12">
@@ -40,4 +41,5 @@
   </div>
 </div>
 </div>
+{% endif %}
 {% endblock %}
