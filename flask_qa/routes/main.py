@@ -8,7 +8,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    questions = Question.all()
+    questions = Question.query.all()
 
     context = {
         'questions' : questions
@@ -90,7 +90,6 @@ def unanswered():
 
     unanswered_questions = Question.query\
         .filter_by(expert_id=current_user.id)\
-        .filter(Question.answer == None)\
         .all()
 
     context = {
