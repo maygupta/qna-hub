@@ -8,10 +8,11 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    questions = Question.query.all()
+    trending_questions = Question.query.order_by(Question.ref_count.desc())\
+        .limit(5).all()
 
     context = {
-        'questions' : questions
+        'questions' : trending_questions
     }
 
     return render_template('home.html', **context)
@@ -77,6 +78,11 @@ def question(question_id):
         question.ref_count += 1
     else:
         question.ref_count = 1
+
+    if request.method == 'POST':
+        answer = Answer(text=request.form['answer'],
+            added_by=current_user.id,
+            question_id=question_id)
 
     db.session.commit()
 
