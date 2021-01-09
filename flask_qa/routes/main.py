@@ -19,26 +19,25 @@ def index():
 
 @main.route('/search', methods=['GET', 'POST'])
 def search():
-    query = "%{}%".format(request.form['query'])
-    questions = Question.query.filter(Question.question.like(query)).all()
+    query = request.form['query']
+    search_query = "%{}%".format(query)
+    questions = Question.query.filter(Question.question.ilike(search_query)).all()
 
     context = {
         'questions' : questions,
         'query': query
     }
 
-    return render_template('search.html', **context)
+    return render_template('home.html', **context)
 
 @main.route('/ask', methods=['GET', 'POST'])
 @login_required
 def ask():
     if request.method == 'POST':
         question = request.form['question']
-        expert = request.form['expert']
 
         question = Question(
             question=question, 
-            expert_id=expert, 
             asked_by_id=current_user.id
         )
 
@@ -47,13 +46,8 @@ def ask():
 
         return redirect(url_for('main.index'))
 
-    experts = User.query.filter_by(expert=True).all()
 
-    context = {
-        'experts' : experts
-    }
-
-    return render_template('ask.html', **context)
+    return render_template('ask.html')
 
 @main.route('/answer/<int:question_id>', methods=['GET', 'POST'])
 @login_required
