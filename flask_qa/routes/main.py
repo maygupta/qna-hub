@@ -25,7 +25,9 @@ def search():
     # order_by_str = text("LEVENSHTEIN(Question.question,'" + query "')"
     # questions = Question.query.filter(Question.question.ilike(search_query))\
     questions = Question.query \
-        .order_by(func.similarity(Question.question, query).desc()).all()
+        .order_by(func.similarity(Question.question, query).desc())
+        .limit(3)
+        .all()
 
 
     context = {
