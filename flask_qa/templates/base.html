@@ -32,7 +32,7 @@
             {% if current_user.is_authenticated %}
             <li><a href="{{ url_for('main.ask') }}">Ask Question</a></li>
             {% endif %}
-            {% if current_user.is_authenticated and current_user.expert %}
+            {% if current_user.is_authenticated and current_user.admin %}
             <li><a href="{{ url_for('main.unanswered') }}">Unanswered Questions</a></li>
             {% endif %}
             {% if current_user.is_authenticated and current_user.admin %}

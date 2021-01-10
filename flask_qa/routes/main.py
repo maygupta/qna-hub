@@ -102,12 +102,15 @@ def question(question_id):
 @main.route('/unanswered')
 @login_required
 def unanswered():
-    if not current_user.expert:
+    if not current_user.admin:
         return redirect(url_for('main.index'))
 
-    unanswered_questions = Question.query\
-        .filter_by(expert_id=current_user.id)\
-        .all()
+    questions = Question.query.all()
+    unanswered_questions = list()
+
+    for q in questions:
+        if len(q.answers) > 0:
+            unanswered_questions.append(q)
 
     context = {
         'unanswered_questions' : unanswered_questions
