@@ -9,7 +9,9 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    trending_questions = Question.query.order_by(Question.ref_count.desc())\
+    trending_questions = Question.query\
+        .filter(Question.ref_count > 0)\
+        .order_by(Question.ref_count.desc())\
         .limit(5).all()
 
     context = {
