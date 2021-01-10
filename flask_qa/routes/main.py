@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from flask_qa.extensions import db
 from flask_qa.models import Question, User, Answer
+from sqlalchemy import func
 
 main = Blueprint('main', __name__)
 
@@ -21,8 +22,11 @@ def index():
 def search():
     query = request.form['query']
     search_query = "%{}%".format(query)
-    questions = Question.query.filter(Question.question.ilike(search_query))\
-        .order_by(Question.ref_count.desc()).all()
+    # order_by_str = text("LEVENSHTEIN(Question.question,'" + query "')"
+    # questions = Question.query.filter(Question.question.ilike(search_query))\
+    questions = Question.query \
+        .order_by(func.similarity(Question.question, query).desc()).all()
+
 
     context = {
         'questions' : questions,
