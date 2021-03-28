@@ -17,7 +17,7 @@ def index():
     trending_questions = Question.query\
         .filter(Question.ref_count > 0)\
         .order_by(Question.ref_count.desc())\
-        .limit(5).all()
+        .limit(50).all()
 
     context = {
         'questions' : trending_questions
