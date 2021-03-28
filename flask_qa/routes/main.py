@@ -4,6 +4,11 @@ from flask_login import current_user, login_required
 from flask_qa.extensions import db
 from flask_qa.models import Question, User, Answer
 from sqlalchemy import func
+from flask_qa.csv_parser import CSVParser
+import os
+
+# Upload folder
+UPLOAD_FOLDER = 'static/files'
 
 main = Blueprint('main', __name__)
 
@@ -19,6 +24,19 @@ def index():
     }
 
     return render_template('home.html', **context)
+
+@main.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename != '':
+            file.save(file.filename)
+        CSVParser.parse(file.filename)
+        return redirect(url_for('main.index'))  
+    else:
+        return render_template('upload.html')
 
 @main.route('/search', methods=['GET', 'POST'])
 def search():
