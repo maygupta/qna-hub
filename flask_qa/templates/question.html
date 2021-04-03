@@ -7,6 +7,14 @@
   <br>  
   <h5>Created On: {{ question.created_on.strftime('%Y-%m-%d %H:%M %p') }}</h5>
   <h5>{{question.ref_count}} views</h5>
+
+  <hr>
+  <h4> Tags </h4>
+  <h5>
+    {% for tag in question.tags() %}
+      <span>{{tag}} </span>
+    {% endfor %}
+  </h5>
   
 </div>
 

@@ -1,1 +1,9 @@
 Generic single-database configuration.
+
+To generate migrations
+- edit models.py
+- then run  flask db migrate -m "Add tags table"
+
+
+To run migrations
+flask db upgrade

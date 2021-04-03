@@ -34,6 +34,18 @@ class User(UserMixin, db.Model):
     def unhashed_password(self, unhashed_password):
         self.password = generate_password_hash(unhashed_password)
 
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
+
+class TagQuestionMap(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'))
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
+
+
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.Text)
@@ -45,6 +57,15 @@ class Question(db.Model):
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     ref_count = db.Column(db.Integer)
+
+    def tags(self):
+        tag_map = TagQuestionMap.query.with_entities(TagQuestionMap.tag_id)\
+             .filter(TagQuestionMap.question_id == self.id).all()
+        tags = Tag.query\
+            .filter(Tag.id.in_(tag_map)).all()
+        print tags
+        return [t.name for t in tags]
+
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,7 +1,8 @@
 import csv
 import os
 from flask_qa.extensions import db
-from flask_qa.models import Question, Answer, User
+from flask_qa.models import Question, Answer, User, Tag, TagQuestionMap
+from flask_login import current_user
 from werkzeug.exceptions import BadRequest
 from sqlalchemy import func
 
@@ -29,11 +30,27 @@ class CSVParser:
           if user:    
             question = Question(question=row['question'], asked_by_id=user.id)
           else:
-            question = Question(question=row['question'])
+            User()
+            question = Question(question=row['question'], asked_by_id=current_user.id)
           db.session.add(question)
           db.session.commit()
 
           if row['answer'] != '':
-            answer = Answer(text=row['answer'], question_id=question.id)
+            answer = Answer(text=row['answer'], question_id=question.id, added_by=current_user.id)
             db.session.add(answer)
             db.session.commit()
+
+          if row['tags'] != '':
+            for tag_text in row['tags'].split(","):
+              tag = Tag.query.filter(Tag.name.ilike(tag_text.lower())).first()
+              if not tag:
+                tag = Tag(name=tag_text)
+                db.session.add(tag)
+                db.session.commit()
+
+              tag_map = TagQuestionMap(tag_id=tag.id, question_id=question.id)
+              db.session.add(tag_map)
+              db.session.commit()
+
+
+
