@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 
 from flask_qa.extensions import db
-from flask_qa.models import Question, User, Answer
+from flask_qa.models import Question, User, Answer, TagQuestionMap, Tag
 from sqlalchemy import func
 from flask_qa.csv_parser import CSVParser
 import os
@@ -49,6 +49,23 @@ def search():
         .limit(3)\
         .all()
 
+    # Search in tags table
+    tags = Tag.query \
+        .filter(func.similarity(Tag.name, query) > 0.7) \
+        .order_by(func.similarity(Tag.name, query).desc())\
+        .limit(1)\
+        .all()
+    tag_ids = [t.id for t in tags]
+
+    tag_map = TagQuestionMap.query\
+        .filter(TagQuestionMap.tag_id.in_(tag_ids))\
+        .limit(3)\
+        .all()
+
+    question_ids = [t.question_id for t in tag_map]
+
+    questions_from_tag_search = Question.query.filter(Question.id.in_(question_ids)).all()
+    [questions.append(q) for q in questions_from_tag_search]
 
     context = {
         'questions' : questions,
@@ -99,20 +116,43 @@ def answer(question_id):
 
     return render_template('answer.html', **context)
 
-@main.route('/question/<int:question_id>', methods= ['GET', 'POST'])
+@main.route('/question/<int:question_id>', methods= ['GET', 'POST', 'PUT'])
 def question(question_id):
+
     question = Question.query.get_or_404(question_id)
 
     context = {
         'question' : question
     }
 
-    if question.ref_count:
-        question.ref_count += 1
-    else:
-        question.ref_count = 1
+    all_tags = Tag.query.all()
+
+    tags = [t.name for t in all_tags]
+
+    if question:
+        tag_choices = [
+            {
+                'value': t, 
+                'label': t,
+                'selected': t in question.tags(),
+                'disabled': False
+            } 
+            for t in tags
+        ]
+
+        context['tags'] = tag_choices
+
+        if question.ref_count:
+            question.ref_count += 1
+        else:
+            question.ref_count = 1
 
     if request.method == 'POST':
+        if '_method' in request.form and request.form['_method'] == 'put':
+            question.question = request.form['question']
+            db.session.commit()        
+            return redirect(url_for('main.question', question_id=question_id))
+
         answer = Answer(text=request.form['answer'],
             added_by=current_user.id,
             question_id=question_id)
@@ -120,6 +160,8 @@ def question(question_id):
         db.session.add(answer)
         db.session.commit()        
         return redirect(url_for('main.question', question_id=question_id))
+
+
 
     db.session.commit()
 

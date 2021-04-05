@@ -63,7 +63,6 @@ class Question(db.Model):
              .filter(TagQuestionMap.question_id == self.id).all()
         tags = Tag.query\
             .filter(Tag.id.in_(tag_map)).all()
-        print tags
         return [t.name for t in tags]
 
 

@@ -21,8 +21,6 @@ class CSVParser:
           func.lower(Question.question) == row['question'].lower())
         .all()) > 0
 
-        print is_ques_duplicate, row
-        
         if is_ques_duplicate:
           raise BadRequest("Question %s already exists" % row['question'])
 
