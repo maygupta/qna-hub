@@ -150,7 +150,33 @@ def question(question_id):
     if request.method == 'POST':
         if '_method' in request.form and request.form['_method'] == 'put':
             question.question = request.form['question']
-            db.session.commit()        
+            db.session.commit()
+            selected_tags = []
+            form = request.form.to_dict(flat=False)
+
+            selected_tags = form['tags']
+            current_tags = question.tags()
+
+            for t in current_tags:
+                tag = Tag.query.filter(Tag.name == t).first()
+                if not t in selected_tags:
+                    TagQuestionMap.query.filter(TagQuestionMap.tag_id == tag.id)\
+                        .filter(TagQuestionMap.question_id == question.id).delete()
+                    db.session.commit()
+
+            for t in selected_tags:
+                if not t in current_tags:
+                    tag = Tag.query.filter(Tag.name == t).first()
+
+                    if not tag:
+                        tag = Tag(name=t)
+                        db.session.add(tag)
+                        db.session.commit()
+
+                    db.session.add(TagQuestionMap(tag_id=tag.id, question_id=question.id))
+                    db.session.commit()
+
+
             return redirect(url_for('main.question', question_id=question_id))
 
         answer = Answer(text=request.form['answer'],
