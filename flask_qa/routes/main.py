@@ -82,7 +82,7 @@ def ask():
 
         question = Question(
             question=question, 
-            asked_by=current_user.name
+            author=current_user.name
         )
 
         db.session.add(question)
@@ -103,7 +103,7 @@ def answer(question_id):
 
     if request.method == 'POST':
         answer = Answer(text=request.form['answer'],
-            added_by=current_user.id,
+            author=current_user.name,
             question_id=question_id)
 
         db.session.commit()
@@ -180,7 +180,7 @@ def question(question_id):
             return redirect(url_for('main.question', question_id=question_id))
 
         answer = Answer(text=request.form['answer'],
-            added_by=current_user.id,
+            author=current_user.name,
             question_id=question_id)
 
         db.session.add(answer)

@@ -35,7 +35,7 @@
             <span class="orange">Views: </span> <span> {{question.ref_count}} </span>
             <span>     </span><span class="orange">       Created On: </span> 
             <span>{{ question.created_on.strftime('%Y-%m-%d %H:%M %p') }}</span>
-            <span>{{ question.asked_by }}</span>
+            <span>{{ question.author }}</span>
 
             <br>
             <br>
@@ -62,7 +62,7 @@
             <div class="jumbotron">
               <h2 class="list-group-item-heading"><pre>{{ answer.text }}</pre></h2>
               <br>
-              <h5>Added By: {{ answer.added_by }}</h5>
+              <h5>Added By: {{ answer.author }}</h5>
               <h5>Added On: {{ answer.created_on.strftime('%Y-%m-%d %H:%M %p') }}</h5>
             </div>
           {% endfor %}

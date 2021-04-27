@@ -38,7 +38,7 @@ class Question(db.Model):
     
     answers = db.relationship("Answer")
 
-    asked_by = db.Column(db.Text)
+    author = db.Column(db.Text)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     ref_count = db.Column(db.Integer)
@@ -54,7 +54,7 @@ class Question(db.Model):
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text)
-    added_by = db.Column(db.Text)
+    author = db.Column(db.Text)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())    
     ref_count = db.Column(db.Integer)

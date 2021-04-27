@@ -29,7 +29,7 @@ class CSVParser:
         db.session.commit()
 
         if row['answer'] != '':
-          answer = Answer(text=row['answer'], question_id=question.id, added_by=row['answer_author_name'])
+          answer = Answer(text=row['answer'], question_id=question.id, author=row['answer_author_name'])
           db.session.add(answer)
           db.session.commit()
 
