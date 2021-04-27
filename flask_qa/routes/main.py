@@ -82,7 +82,7 @@ def ask():
 
         question = Question(
             question=question, 
-            asked_by_id=current_user.id
+            asked_by=current_user.name
         )
 
         db.session.add(question)

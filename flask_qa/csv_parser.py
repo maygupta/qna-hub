@@ -15,8 +15,6 @@ class CSVParser:
       csv_reader = csv.DictReader(csv_file)
       line_count = 0
       for row in csv_reader:
-        user = User.query.filter(User.name.ilike(row['question_author_name'])) \
-                    .first()
         is_ques_duplicate = len(Question.query.filter(
           func.lower(Question.question) == row['question'].lower())
         .all()) > 0
@@ -24,16 +22,14 @@ class CSVParser:
         if is_ques_duplicate:
           raise BadRequest("Question %s already exists" % row['question'])
 
-        if user:    
-          question = Question(question=row['question'], asked_by_id=user.id)
-        else:
-          User()
-          question = Question(question=row['question'], asked_by_id=current_user.id)
+        
+        question = Question(question=row['question'], asked_by=row['question_author_name'])
+        
         db.session.add(question)
         db.session.commit()
 
         if row['answer'] != '':
-          answer = Answer(text=row['answer'], question_id=question.id, added_by=current_user.id)
+          answer = Answer(text=row['answer'], question_id=question.id, added_by=row['answer_author_name'])
           db.session.add(answer)
           db.session.commit()
 
