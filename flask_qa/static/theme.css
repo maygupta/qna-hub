@@ -32,6 +32,10 @@ pre {
   font-size: 17px;
 }
 
+.white {
+  color: white;
+}
+
 .choices__list {
   color: black;
 }
