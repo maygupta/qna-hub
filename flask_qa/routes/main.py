@@ -201,13 +201,17 @@ def unanswered():
 
     questions = Question.query.all()
     unanswered_questions = list()
+    answered_questions = list()
 
     for q in questions:
-        if len(q.answers) > 0:
+        if len(q.answers) == 0:
             unanswered_questions.append(q)
+        else:
+            answered_questions.append(q)
 
     context = {
-        'unanswered_questions' : unanswered_questions
+        'unanswered_questions' : unanswered_questions,
+        'answered_questions': answered_questions
     }
 
     return render_template('unanswered.html', **context)

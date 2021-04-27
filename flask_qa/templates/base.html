@@ -33,7 +33,7 @@
             <li><a href="{{ url_for('main.ask') }}">Ask Question</a></li>
             {% endif %}
             {% if current_user.is_authenticated and current_user.admin %}
-            <li><a href="{{ url_for('main.unanswered') }}">Unanswered Questions</a></li>
+            <li><a href="{{ url_for('main.unanswered') }}">All Questions</a></li>
             <li><a href="{{ url_for('main.upload') }}">Upload</a></li>
             {% endif %}
             {% if current_user.is_authenticated and current_user.admin %}
