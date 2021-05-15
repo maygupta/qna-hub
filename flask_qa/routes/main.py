@@ -160,10 +160,9 @@ def question(question_id):
         if '_method' in request.form and request.form['_method'] == 'put':
             question.question = request.form['question']
             db.session.commit()
-            selected_tags = []
             form = request.form.to_dict(flat=False)
 
-            selected_tags = form['tags']
+            selected_tags = form.get('tags', [])
             current_tags = question.tags()
 
             for t in current_tags:
