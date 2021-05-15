@@ -220,7 +220,10 @@ def unanswered():
 
     context = {
         'unanswered_questions' : unanswered_questions,
-        'answered_questions': answered_questions
+        'answered_questions': answered_questions,
+        'start_index': 1,
+        'end_index': len(answered_questions),
+        'total': len(answered_questions)
     }
 
     return render_template('unanswered.html', **context)
