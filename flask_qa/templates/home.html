@@ -6,14 +6,22 @@
         <div class="form-group">
           <input type="text" class="form-control" name="query" id="query" placeholder="Search Questions">
         </div>
-        <!-- <button type="submit" class="btn btn-primary">Search</button> -->
       </form>
 
+      <form method="POST" action="/search">
+        <div class="form-group">
+          <input type="text" class="form-control" name="query_tags" id="query" placeholder="Search Tags">
+        </div>
+      </form>
 
 
       <div class="page-header">
       {% if query %}
-        <h1>Questions matching '{{ query }}'</h1>
+        {% if search_by_tag %}
+          <h1>Questions matching Tag: '{{ query }}'</h1>
+        {% else %}
+          <h1>Questions matching text: '{{ query }}'</h1>
+        {% endif %}
       {% else %}
         <h1>Trending Questions</h1>
       {% endif %}

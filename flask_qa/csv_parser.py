@@ -23,13 +23,18 @@ class CSVParser:
           raise BadRequest("Question %s already exists" % row['question'])
 
         
-        question = Question(question=row['question'], asked_by=row['question_author_name'])
+        question = Question(question=row['question'], author=row['question_author_name'])
+
+        if 'question_date' in row and row['question_date'] != '':
+          question.created_on = row['question_date']
         
         db.session.add(question)
         db.session.commit()
 
         if row['answer'] != '':
           answer = Answer(text=row['answer'], question_id=question.id, author=row['answer_author_name'])
+          if 'answer_date' in row and row['answer_date'] != '':
+            answer.created_on = row['answer_date']
           db.session.add(answer)
           db.session.commit()
 

@@ -40,36 +40,45 @@ def upload():
 
 @main.route('/search', methods=['GET', 'POST'])
 def search():
-    query = request.form['query']
-    search_query = "%{}%".format(query)
-    # order_by_str = text("LEVENSHTEIN(Question.question,'" + query "')"
-    # questions = Question.query.filter(Question.question.ilike(search_query))\
-    questions = Question.query \
-        .order_by(func.similarity(Question.question, query).desc())\
-        .limit(3)\
-        .all()
+    search_by_tag = False
+    questions = []
 
-    # Search in tags table
-    tags = Tag.query \
-        .filter(func.similarity(Tag.name, query) > 0.7) \
-        .order_by(func.similarity(Tag.name, query).desc())\
-        .limit(1)\
-        .all()
-    tag_ids = [t.id for t in tags]
+    if 'query_tags' in request.form:
+        query = request.form['query_tags']
+        search_by_tag = True
 
-    tag_map = TagQuestionMap.query\
-        .filter(TagQuestionMap.tag_id.in_(tag_ids))\
-        .limit(3)\
-        .all()
+        # Search in tags table
+        tags = Tag.query \
+            .filter(func.similarity(Tag.name, query) > 0.4) \
+            .order_by(func.similarity(Tag.name, query).desc())\
+            .limit(3)\
+            .all()
+        tag_ids = [t.id for t in tags]
 
-    question_ids = [t.question_id for t in tag_map]
+        tag_map = TagQuestionMap.query\
+            .filter(TagQuestionMap.tag_id.in_(tag_ids))\
+            .limit(3)\
+            .all()
 
-    questions_from_tag_search = Question.query.filter(Question.id.in_(question_ids)).all()
-    [questions.append(q) for q in questions_from_tag_search]
+        question_ids = [t.question_id for t in tag_map]
 
+        questions = Question.query.filter(Question.id.in_(question_ids)).all()
+
+    if not search_by_tag:
+        query = request.form['query']
+        search_query = "%{}%".format(query)
+        # order_by_str = text("LEVENSHTEIN(Question.question,'" + query "')"
+        # questions = Question.query.filter(Question.question.ilike(search_query))\
+        questions = Question.query \
+            .order_by(func.similarity(Question.question, query).desc())\
+            .limit(3)\
+            .all()
+
+    
     context = {
         'questions' : questions,
-        'query': query
+        'query': query,
+        'search_by_tag': search_by_tag
     }
 
     return render_template('home.html', **context)

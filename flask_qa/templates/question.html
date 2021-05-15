@@ -28,7 +28,7 @@
           </span>
         </div>
 
-        <div class="form-group">
+        <div>
 
           <div class="metadata">
             <br>
@@ -43,13 +43,10 @@
               <span>     </span><span class="orange">       Created On: </span> 
               <span>{{ question.created_on.strftime('%Y-%m-%d %H:%M %p') }}</span>
             </div>
-            
 
-            <br>
-            <br>
           </div>
           <div class="form-metadata">
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="save-btn btn btn-primary">Save</button>
           </div>
         </div>
     </div>
@@ -69,9 +66,15 @@
           {% for answer in question.answers %}
             <div class="jumbotron">
               <h2 class="list-group-item-heading"><pre>{{ answer.text }}</pre></h2>
-              <br>
-              <h5>Author: {{ answer.author }}</h5>
-              <h5>Added On: {{ answer.created_on.strftime('%Y-%m-%d %H:%M %p') }}</h5>
+              <div class="metadata">
+                <div>
+                  <span class="orange">Author: </span> <span> {{answer.author}} </span>
+                </div>
+                <div>
+                  <span>     </span><span class="orange">       Created On: </span> 
+                  <span>{{ answer.created_on.strftime('%Y-%m-%d %H:%M %p') }}</span>
+                </div>
+              </div>
             </div>
           {% endfor %}
         </div>
