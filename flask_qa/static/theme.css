@@ -74,6 +74,3 @@ input[type=text] {
   border: 1px solid gray !important;
 }
 
-.list-group-item-text > p {
-  color: #df691a;
-}
