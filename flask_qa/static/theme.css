@@ -69,3 +69,11 @@ input[type=text] {
   word-wrap: break-word;
   word-break: break-all;
 }
+
+.list-group-item {
+  border: 1px solid gray !important;
+}
+
+.list-group-item-text > p {
+  color: #df691a;
+}
