@@ -68,7 +68,7 @@ def upload():
         if file.filename != '':
             file.save(file.filename)
         CSVParser.parse(file.filename)
-        return redirect(url_for('main.index'))  
+        return redirect(url_for('main.index'))
     else:
         return render_template('upload.html')
 
@@ -77,6 +77,10 @@ def upload():
 def search_lectures():
     search_by_tag = False
     lectures = []
+
+    if request.method == 'GET':
+        return redirect(url_for('main.lectures'))
+
 
     if 'query_tags' in request.form:
         query = request.form['query_tags']
