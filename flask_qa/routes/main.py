@@ -106,13 +106,13 @@ def search_lectures():
 
     if not search_by_tag:
         query = request.form['query']
-        search_query = "%{}%".format(query)
+        search_query = "'%s'" % query
 
         lectures = Lecture.query \
             .filter(
                 or_(
-                    Lecture.__ts_vector__.match(query),
-                    Lecture.title.match(query)
+                    Lecture.__ts_vector__.match(search_query),
+                    Lecture.title.match(search_query)
                     )
                 ) \
             .all()
