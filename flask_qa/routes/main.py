@@ -3,9 +3,10 @@ from flask_login import current_user, login_required
 
 from flask_qa.extensions import db
 from flask_qa.models import Question, User, Answer, TagQuestionMap, Tag, Lecture, TagLectureMap
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from flask_qa.csv_parser import CSVParser
 import os
+
 
 # Upload folder
 UPLOAD_FOLDER = 'static/files'
@@ -88,7 +89,7 @@ def search_lectures():
 
         # Search in tags table
         tags = Tag.query \
-            .filter(func.similarity(Tag.name, query) > 0.4) \
+            .filter(func.similarity(Tag.name, query) > 0.6) \
             .order_by(func.similarity(Tag.name, query).desc())\
             .limit(3)\
             .all()
@@ -106,11 +107,15 @@ def search_lectures():
     if not search_by_tag:
         query = request.form['query']
         search_query = "%{}%".format(query)
-        lectures = Lecture.query \
-            .order_by(func.similarity(Lecture.text, query).desc())\
-            .limit(3)\
-            .all()
 
+        lectures = Lecture.query \
+            .filter(
+                or_(
+                    Lecture.__ts_vector__.match(query),
+                    Lecture.title.match(query)
+                    )
+                ) \
+            .all()
     
     context = {
         'lectures' : lectures,

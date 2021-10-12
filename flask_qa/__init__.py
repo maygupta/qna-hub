@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 
 from .commands import create_tables
 from .extensions import db, login_manager
-from .models import User
+from .models import User, TSVector
 from .routes.auth import auth
 from .routes.main import main
 

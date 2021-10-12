@@ -1,0 +1,18 @@
+Generic single-database configuration.
+
+To start the app locally
+ gunicorn wsgi:app
+
+To generate migrations
+- edit models.py
+- then run  flask db migrate -m "Add tags table"
+
+
+
+To run migrations
+flask db upgrade (Also run on remote post deploy)
+
+Also you can point local postgres to prod postgres and run migrations locally
+
+check alembic_version table to know which was the last version that ran
+
