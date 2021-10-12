@@ -10,4 +10,8 @@ To generate migrations
 
 
 To run migrations
-flask db upgrade
+flask db upgrade (Also run on remote post deploy)
+
+Also you can point local postgres to prod postgres and run migrations locally
+
+check alembic_version table to know which was the last version that ran
