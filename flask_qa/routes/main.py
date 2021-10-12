@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 
 from flask_qa.extensions import db
-from flask_qa.models import Question, User, Answer, TagQuestionMap, Tag
+from flask_qa.models import Question, User, Answer, TagQuestionMap, Tag, Lecture, TagLectureMap
 from sqlalchemy import func
 from flask_qa.csv_parser import CSVParser
 import os
@@ -25,6 +25,40 @@ def index():
 
     return render_template('home.html', **context)
 
+@main.route('/lectures', methods=['GET'])
+def lectures():
+    trending_lectures = Lecture.query\
+        .filter(Lecture.ref_count >= 0)\
+        .order_by(Lecture.ref_count.desc())\
+        .limit(50).all()
+
+    context = {
+        'lectures' : trending_lectures
+    }
+
+    return render_template('lectures.html', **context)
+
+@main.route('/add_lecture', methods=['POST'])
+@login_required
+def add_lecture():
+    text = request.form['text']
+    author = request.form['author']
+    title = request.form['title']
+
+    lecture = Lecture(
+        text=text, 
+        author=author,
+        title=title,
+        ref_count=1
+    )
+    print("adding lecture")
+
+    db.session.add(lecture)
+    db.session.commit()
+
+    return redirect(url_for('main.lectures'))
+
+
 @main.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
@@ -37,6 +71,50 @@ def upload():
         return redirect(url_for('main.index'))  
     else:
         return render_template('upload.html')
+
+
+@main.route('/search_lectures', methods=['GET', 'POST'])
+def search_lectures():
+    search_by_tag = False
+    lectures = []
+
+    if 'query_tags' in request.form:
+        query = request.form['query_tags']
+        search_by_tag = True
+
+        # Search in tags table
+        tags = Tag.query \
+            .filter(func.similarity(Tag.name, query) > 0.4) \
+            .order_by(func.similarity(Tag.name, query).desc())\
+            .limit(3)\
+            .all()
+        tag_ids = [t.id for t in tags]
+
+        tag_map = TagLectureMap.query\
+            .filter(TagLectureMap.tag_id.in_(tag_ids))\
+            .limit(3)\
+            .all()
+
+        lecture_ids = [t.lecture_id for t in tag_map]
+
+        lectures = Lecture.query.filter(Lecture.id.in_(lecture_ids)).all()
+
+    if not search_by_tag:
+        query = request.form['query']
+        search_query = "%{}%".format(query)
+        lectures = Lecture.query \
+            .order_by(func.similarity(Lecture.text, query).desc())\
+            .limit(3)\
+            .all()
+
+    
+    context = {
+        'lectures' : lectures,
+        'query': query,
+        'search_by_tag': search_by_tag
+    }
+
+    return render_template('lectures.html', **context)
 
 @main.route('/search', methods=['GET', 'POST'])
 def search():
@@ -200,6 +278,75 @@ def question(question_id):
     db.session.commit()
 
     return render_template('question.html', **context)
+
+@main.route('/lecture/<int:lecture_id>', methods= ['GET', 'POST', 'PUT'])
+def lecture(lecture_id):
+
+    lecture = Lecture.query.get_or_404(lecture_id)
+
+    context = {
+        'lecture' : lecture
+    }
+
+    all_tags = Tag.query.all()
+
+    tags = [t.name for t in all_tags]
+
+    if lecture:
+        tag_choices = [
+            {
+                'value': t, 
+                'label': t,
+                'selected': t in lecture.tags(),
+                'disabled': False
+            } 
+            for t in tags
+        ]
+
+        context['tags'] = tag_choices
+
+        if lecture.ref_count:
+            lecture.ref_count += 1
+        else:
+            lecture.ref_count = 1
+
+    if request.method == 'POST':
+        if '_method' in request.form and request.form['_method'] == 'put':
+            lecture.text = request.form['text']
+            db.session.commit()
+            form = request.form.to_dict(flat=False)
+
+            selected_tags = form.get('tags', [])
+            current_tags = lecture.tags()
+
+            for t in current_tags:
+                tag = Tag.query.filter(Tag.name == t).first()
+                if not t in selected_tags:
+                    TagLectureMap.query.filter(TagLectureMap.tag_id == tag.id)\
+                        .filter(TagLectureMap.lecture_id == lecture.id).delete()
+                    db.session.commit()
+
+            for t in selected_tags:
+                if not t in current_tags:
+                    tag = Tag.query.filter(Tag.name == t).first()
+
+                    if not tag:
+                        tag = Tag(name=t)
+                        db.session.add(tag)
+                        db.session.commit()
+
+                    db.session.add(TagLectureMap(tag_id=tag.id, lecture_id=lecture.id))
+                    db.session.commit()
+
+
+            return redirect(url_for('main.lecture', lecture_id=lecture_id))
+
+        return redirect(url_for('main.lecture', lecture_id=lecture_id))
+
+
+    db.session.commit()
+
+    return render_template('lecture.html', **context)
 
 @main.route('/unanswered')
 @login_required

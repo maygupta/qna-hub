@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}All Lectures{% endblock %}
+
+  
+{% block content %}
+
+  <form method="POST" action="/search_lectures">
+    <div class="form-group">
+      <input type="text" class="form-control" name="query" id="query" placeholder="Search Lectures">
+    </div>
+  </form>
+
+  <form method="POST" action="/search_lectures">
+    <div class="form-group">
+      <input type="text" class="form-control" name="query_tags" id="query" placeholder="Search by Tags">
+    </div>
+  </form>
+
+
+  <div class="page-header">
+  {% if query %}
+    {% if search_by_tag %}
+      <h1>Lectures matching Tag: '{{ query }}'</h1>
+    {% else %}
+      <h1>Lectures matching text: '{{ query }}'</h1>
+    {% endif %}
+  {% else %}
+    <h1>Trending Lectures</h1>
+  {% endif %}
+  
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="list-group">
+        {% for lecture in lectures %}
+          <a href="{{ url_for('main.lecture', lecture_id=lecture.id) }}" class="list-group-item">
+            <h4 class="list-group-item-heading">{{ lecture.text }}</h4>
+          </a>
+          <br>
+        {% endfor %}
+      </div>
+    </div><!-- /.col-lg-12 -->
+  </div>
+
+
+  <div class="page-header">
+    <h3>Add New Lecture</h3>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well bs-component">
+        <form class="form-horizontal" method="POST" action="{{ url_for('main.add_lecture') }}">
+          <fieldset>
+            <div class="form-group">
+              <label for="textArea" class="col-lg-2 control-label">Title</label>
+              <div class="col-lg-10">
+                <input class="form-control" name="title" rows="3">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="textArea" class="col-lg-2 control-label">Content</label>
+              <div class="col-lg-10">
+                <textarea class="form-control" name="text" rows="3" id="textArea"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="textArea" class="col-lg-2 control-label">Author</label>
+              <div class="col-lg-10">
+                <input class="form-control" name="author" rows="3">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-lg-10 col-lg-offset-2">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

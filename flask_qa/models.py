@@ -61,3 +61,29 @@ class Answer(db.Model):
 
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
 
+class TagLectureMap(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'))
+    lecture_id = db.Column(db.Integer, db.ForeignKey('lecture.id'))
+
+class Lecture(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text)
+    text = db.Column(db.Text)
+    author = db.Column(db.Text)
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())    
+    ref_count = db.Column(db.Integer)
+
+    def tags(self):
+        tag_map = TagLectureMap.query.with_entities(TagLectureMap.tag_id)\
+             .filter(TagLectureMap.lecture_id == self.id).all()
+        tags = Tag.query\
+            .filter(Tag.id.in_(tag_map)).all()
+        return [t.name for t in tags]
+
+
+
+
+

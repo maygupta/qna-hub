@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Lecture{% endblock %}
+
+{% block content %}
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<form class="form-horizontal" method="POST" action="{{ url_for('main.lecture', lecture_id=lecture.id) }}">
+  <fieldset>
+    <div class="form-group">
+      <input type="hidden" name="_method" value="put" />
+      
+      <div class="jumbotron">
+        <label>Title</label>
+        <input class="question" type="text" name="title" value="{{lecture.title}}">
+        <br>
+        <label>Content</label>
+        <textarea name="text" class="question">{{ lecture.text }}</textarea>
+        
+        <br>
+        <br>
+        <div>
+          <span class="white">Tags: </span>
+          <span>
+            <select multiple name="tags" class="tags"></select>
+            
+          </span>
+        </div>
+
+        <div>
+
+          <div class="metadata">
+            <br>
+            <div>
+              <span class="orange">Author: </span> <span> {{lecture.author}} </span>
+            </div>
+            <div>
+              <span class="orange">Views: </span> <span> {{lecture.ref_count}} </span>
+            </div>
+
+            <div>
+              <span>     </span><span class="orange">       Created On: </span> 
+              <span>{{ lecture.created_on.strftime('%Y-%m-%d %H:%M %p') }}</span>
+            </div>
+
+          </div>
+          <div class="form-metadata">
+            <button type="submit" class="save-btn btn btn-primary">Save</button>
+          </div>
+        </div>
+    </div>
+    
+  </fieldset>
+</form>
+
+<script type="text/javascript">
+  (function() {
+     const choices = new Choices('.tags', {
+       choices: {{tags|tojson}},
+       maxItemCount: 10,
+       searchChoices: true
+     });
+  })();
+    
+</script>
+
+{% endblock %}

@@ -1,8 +1,12 @@
 Generic single-database configuration.
 
+To start the app locally
+ gunicorn wsgi:app
+
 To generate migrations
 - edit models.py
 - then run  flask db migrate -m "Add tags table"
+
 
 
 To run migrations
