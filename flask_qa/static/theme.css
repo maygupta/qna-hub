@@ -32,6 +32,10 @@ pre {
   font-size: 17px;
 }
 
+.orange-lite {
+  color: #df691a;
+}
+
 .white {
   color: white;
 }
@@ -69,3 +73,8 @@ input[type=text] {
   word-wrap: break-word;
   word-break: break-all;
 }
+
+.list-group-item {
+  border: 1px solid gray !important;
+}
+
